@@ -1,0 +1,43 @@
+<div class="card max-w-md mx-auto p-6">
+  <h2 class="text-xl font-bold mb-4">Mon Profil</h2>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+    <!-- Nom -->
+    <div>
+      <label class="form-label">Nom complet</label>
+      <input class="form-input" formControlName="name" />
+      <div
+        *ngIf="form.get('name')?.touched && form.get('name')?.invalid"
+        class="form-error"
+      >
+        Le nom est requis
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label class="form-label">Email</label>
+      <input class="form-input" formControlName="email" readonly />
+    </div>
+
+    <!-- Rôle -->
+    <div>
+      <label class="form-label">Rôle</label>
+      <input class="form-input" formControlName="role" readonly />
+    </div>
+
+    <!-- Avatar -->
+    <div>
+      <label class="form-label">Avatar URL</label>
+      <input class="form-input" formControlName="avatar_url" />
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary w-full"
+      [disabled]="loading || form.invalid"
+    >
+      {{ loading ? "Enregistrement…" : "Enregistrer" }}
+    </button>
+  </form>
+</div>

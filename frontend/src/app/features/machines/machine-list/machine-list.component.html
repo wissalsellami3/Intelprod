@@ -1,0 +1,136 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold flex items-center gap-2">
+      🏭 Machine Management
+    </h2>
+    <button
+      class="btn btn-accent flex items-center gap-1"
+      (click)="openAdd()"
+      *ngIf="auth.isAdmin()"
+    >
+      ➕ Add Machine
+    </button>
+  </div>
+
+  <p *ngIf="isLoading" class="text-center text-gray-500">Loading…</p>
+  <p *ngIf="!isLoading && list.length === 0" class="text-center text-gray-500">
+    No machines.
+  </p>
+
+  <div *ngIf="!isLoading && list.length" class="overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th class="text-right" *ngIf="auth.isAdmin()">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of list">
+          <td>{{ m.name }}</td>
+          <td>
+            <span
+              [ngClass]="{
+                'text-green-600': m.status === 'RUNNING',
+                'text-red-600': m.status === 'STOPPED',
+                'text-yellow-600': m.status === 'MAINTENANCE'
+              }"
+              >{{ m.status }}</span
+            >
+          </td>
+          <td>{{ m.description }}</td>
+          <td class="text-right flex justify-end gap-2" *ngIf="auth.isAdmin()">
+            <button class="btn btn-primary btn-sm" (click)="openEdit(m)">
+              ✏️
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="del(m.id)">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div
+  *ngIf="showAdd"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md space-y-4"
+  >
+    <h3 class="text-lg font-semibold">➕ Add Machine</h3>
+    <form [formGroup]="addForm" (ngSubmit)="submitAdd()" class="space-y-4">
+      <div>
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" formControlName="name" />
+      </div>
+      <div>
+        <label class="form-label">Description</label>
+        <input type="text" class="form-input" formControlName="description" />
+      </div>
+      <div>
+        <label class="form-label">Status</label>
+        <select class="form-input" formControlName="status">
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" class="btn btn-secondary" (click)="closeAdd()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="addForm.invalid"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div
+  *ngIf="showEdit"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md space-y-4"
+  >
+    <h3 class="text-lg font-semibold">🛠️ Edit Machine</h3>
+    <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="space-y-4">
+      <div>
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" formControlName="name" />
+      </div>
+      <div>
+        <label class="form-label">Description</label>
+        <input type="text" class="form-input" formControlName="description" />
+      </div>
+      <div>
+        <label class="form-label">Status</label>
+        <select class="form-input" formControlName="status">
+          <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" class="btn btn-secondary" (click)="closeEdit()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="editForm.invalid"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

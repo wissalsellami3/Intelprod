@@ -1,0 +1,178 @@
+<div class="p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold flex items-center gap-2">
+      👥 User Management
+    </h2>
+    <button
+      class="btn btn-accent flex items-center gap-1"
+      (click)="openAddModal()"
+    >
+      ➕ Add User
+    </button>
+  </div>
+
+  <!-- Loading / Empty -->
+  <div *ngIf="isLoading" class="text-center text-gray-500 dark:text-gray-400">
+    <span class="animate-pulse">Loading users…</span>
+  </div>
+  <div
+    *ngIf="!isLoading && users.length === 0"
+    class="text-center text-gray-500 dark:text-gray-400"
+  >
+    No users found.
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading && users.length" class="overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Full Name</th>
+          <th>Role</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.email }}</td>
+          <td>{{ user.full_name }}</td>
+          <td>
+            <span
+              [ngClass]="{
+                'text-green-600 font-semibold': user.role === 'ADMIN',
+                'text-blue-600 font-medium': user.role === 'USER'
+              }"
+            >
+              {{ user.role }}
+            </span>
+          </td>
+          <td class="text-right flex justify-end gap-2">
+            <button
+              class="btn btn-primary flex items-center gap-1"
+              (click)="openEditModal(user)"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              class="btn btn-danger flex items-center gap-1"
+              (click)="deleteUser(user.id)"
+            >
+              🗑️ Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========== MODALE AJOUT ========== -->
+<div
+  *ngIf="showAdd"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md"
+  >
+    <h3 class="text-lg font-semibold mb-4">➕ Add User</h3>
+
+    <form [formGroup]="addForm" (ngSubmit)="submitAdd()" class="space-y-4">
+      <div>
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" formControlName="email" />
+      </div>
+
+      <div>
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" formControlName="full_name" />
+      </div>
+
+      <div>
+        <label class="form-label">Role</label>
+        <select class="form-input" formControlName="role">
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" formControlName="password" />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <button type="button" class="btn btn-secondary" (click)="closeAdd()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="addForm.invalid"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== MODALE EDIT ========== -->
+<div
+  *ngIf="showEdit"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md"
+  >
+    <h3 class="text-lg font-semibold mb-4">🛠️ Edit User</h3>
+
+    <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="space-y-4">
+      <div>
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-input opacity-60 cursor-not-allowed"
+          [value]="selectedUser?.email"
+          disabled
+        />
+      </div>
+
+      <div>
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" formControlName="full_name" />
+      </div>
+
+      <div>
+        <label class="form-label">Role</label>
+        <select class="form-input" formControlName="role">
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label">New Password</label>
+        <input
+          type="password"
+          class="form-input"
+          formControlName="password"
+          placeholder="Leave blank to keep current"
+        />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <button type="button" class="btn btn-secondary" (click)="closeEdit()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="editForm.invalid"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

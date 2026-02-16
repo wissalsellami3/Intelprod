@@ -1,0 +1,143 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold flex items-center gap-2">
+      🌡️ Sensor Management
+    </h2>
+    <button class="btn btn-accent flex items-center gap-1" (click)="openAdd()">
+      ➕ Add Sensor
+    </button>
+  </div>
+
+  <!-- States -->
+  <div *ngIf="isLoading" class="text-center text-gray-500 dark:text-gray-400">
+    <span class="animate-pulse">Loading sensors…</span>
+  </div>
+  <div
+    *ngIf="!isLoading && sensors.length === 0"
+    class="text-center text-gray-500 dark:text-gray-400"
+  >
+    No sensors found.
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading && sensors.length" class="overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of sensors">
+          <td>{{ s.name }}</td>
+          <td>
+            <span
+              class="font-medium"
+              [ngClass]="{
+                'text-red-600': s.sensor_type === 'TEMPERATURE',
+                'text-blue-600': s.sensor_type === 'HUMIDITY',
+                'text-yellow-600': s.sensor_type === 'LUMINOSITY',
+                'text-purple-600': s.sensor_type === 'VIBRATION'
+              }"
+              >{{ s.sensor_type }}</span
+            >
+          </td>
+          <td class="text-right flex justify-end gap-2">
+            <button
+              class="btn btn-primary flex items-center gap-1"
+              (click)="openEdit(s)"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              class="btn btn-danger flex items-center gap-1"
+              (click)="deleteSensor(s.id)"
+            >
+              🗑️ Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─────── Add Modal ─────── -->
+<div
+  *ngIf="showAdd"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md"
+  >
+    <h3 class="text-lg font-semibold mb-4">➕ Add Sensor</h3>
+
+    <form [formGroup]="addForm" (ngSubmit)="submitAdd()" class="space-y-4">
+      <div>
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" formControlName="name" />
+      </div>
+
+      <div>
+        <label class="form-label">Type</label>
+        <select class="form-input" formControlName="sensor_type">
+          <option *ngFor="let t of sensorTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <button type="button" class="btn btn-secondary" (click)="closeAdd()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="addForm.invalid"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ─────── Edit Modal ─────── -->
+<div
+  *ngIf="showEdit"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div
+    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md"
+  >
+    <h3 class="text-lg font-semibold mb-4">🛠️ Edit Sensor</h3>
+
+    <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="space-y-4">
+      <div>
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" formControlName="name" />
+      </div>
+
+      <div>
+        <label class="form-label">Type</label>
+        <select class="form-input" formControlName="sensor_type">
+          <option *ngFor="let t of sensorTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4">
+        <button type="button" class="btn btn-secondary" (click)="closeEdit()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="editForm.invalid"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

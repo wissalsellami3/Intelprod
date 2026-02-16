@@ -1,0 +1,11 @@
+fastapi==0.111.0
+uvicorn[standard]
+pymongo==4.7.2
+pydantic==2.7.1
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+pydantic-settings
+pytest
+motor
+inference_sdk

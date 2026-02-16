@@ -1,0 +1,107 @@
+<div class="p-6">
+  <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div *ngIf="isAdmin" class="card flex items-center">
+      <div class="rounded-full bg-primary-100 p-3 mr-4">
+        <!-- user icon -->
+      </div>
+      <div>
+        <h3 class="text-sm font-medium">Total Users</h3>
+        <p class="text-xl font-bold">{{ totalUsers }}</p>
+      </div>
+    </div>
+
+    <div class="card flex items-center">
+      <div class="rounded-full bg-primary-100 p-3 mr-4">
+        <!-- sensor icon -->
+      </div>
+      <div>
+        <h3 class="text-sm font-medium">Total Sensors</h3>
+        <p class="text-xl font-bold">{{ totalSensors }}</p>
+      </div>
+    </div>
+
+    <div class="card flex items-center">
+      <div class="rounded-full bg-secondary-100 p-3 mr-4">
+        <!-- machine icon -->
+      </div>
+      <div>
+        <h3 class="text-sm font-medium">Total Machines</h3>
+        <p class="text-xl font-bold">{{ totalMachines }}</p>
+      </div>
+    </div>
+
+    <div class="card flex items-center">
+      <div class="rounded-full bg-accent-100 p-3 mr-4">
+        <!-- cap icon -->
+      </div>
+      <div>
+        <h3 class="text-sm font-medium">Total Caps</h3>
+        <p class="text-xl font-bold">{{ totalCaps }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="card">
+      <h2 class="text-lg font-semibold mb-4">Temperature Trend</h2>
+      <div style="height: 300px">
+        <canvas
+          baseChart
+          [data]="temperatureChartData"
+          [options]="lineChartOptions"
+          type="line"
+        ></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="text-lg font-semibold mb-4">Cap Inspection Results</h2>
+      <div style="height: 300px">
+        <canvas
+          baseChart
+          [data]="capsChartData"
+          [options]="pieChartOptions"
+          type="pie"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="card">
+    <h2 class="text-lg font-semibold mb-4">Recent Activities</h2>
+    <div class="overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Event</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let act of recentActivities">
+            <td class="px-4 py-2">{{ act.time }}</td>
+            <td class="px-4 py-2">{{ act.event }}</td>
+            <td class="px-4 py-2">
+              <span
+                class="px-2 py-1 text-xs rounded-full"
+                [ngClass]="{
+                  'bg-success-100 text-success-800': act.status === 'success',
+                  'bg-error-100 text-error-800': act.status === 'error',
+                  'bg-warning-100 text-warning-800': act.status === 'warning',
+                  'bg-gray-100 text-gray-800': act.status === 'info'
+                }"
+              >
+                {{ act.statusText }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
